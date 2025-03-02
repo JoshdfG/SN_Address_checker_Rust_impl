@@ -1,4 +1,4 @@
-use stark_address_checker::{check_address, is_valid_starknet_address, CheckRpcUrl};
+use sn_address_checker::utility::{check_address, is_valid_starknet_address, CheckRpcUrl};
 
 use tokio;
 const MAINNET_RPC: &str = "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/OEXJ9TcADB3MesS1_JuEc-UXQ_rBMsPR";
@@ -7,7 +7,7 @@ const SEPOLIA_RPC: &str = "https://free-rpc.nethermind.io/sepolia-juno";
 #[tokio::test]
 async fn test_is_mainet_smart_wallet() {
     let options = CheckRpcUrl {
-        node_url: Some(MAINNET_RPC.to_string()),
+        rpc_url: Some(MAINNET_RPC.to_string()),
     };
 
     let address = "0x0554b4a27e6ba1e00a01deebdf486c9c0e7bffc5074f67dfbb79bbf011162a62";
@@ -20,7 +20,7 @@ async fn test_is_mainet_smart_wallet() {
 #[tokio::test]
 async fn test_is_sepolia_smart_contract() {
     let options = CheckRpcUrl {
-        node_url: Some(SEPOLIA_RPC.to_string()),
+        rpc_url: Some(SEPOLIA_RPC.to_string()),
     };
 
     let address = "0x04e49f15aba463e014216cfa37049d0dd5c4bcb6c5743a60b4854c30a35cce0e";
@@ -37,7 +37,7 @@ async fn test_is_sepolia_smart_contract() {
 #[tokio::test]
 async fn test_is_smart_contract_on_mainnet() {
     let options = CheckRpcUrl {
-        node_url: Some(MAINNET_RPC.to_string()),
+        rpc_url: Some(MAINNET_RPC.to_string()),
     };
 
     let address = "0x006a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d88982f";
@@ -54,7 +54,7 @@ async fn test_is_smart_contract_on_mainnet() {
 #[tokio::test]
 async fn test_is_smart_wallet_on_testnet() {
     let options = CheckRpcUrl {
-        node_url: Some(SEPOLIA_RPC.to_string()),
+        rpc_url: Some(SEPOLIA_RPC.to_string()),
     };
 
     let address = "0x06eC96291A904b8B62B446FB32fC9903b5f82D73D7CA319E03ba45D50788Ec30";
@@ -75,7 +75,7 @@ async fn test_is_valid_starket_address() {
 #[tokio::test]
 async fn test_uneployed_address() {
     let options = CheckRpcUrl {
-        node_url: Some(MAINNET_RPC.to_string()),
+        rpc_url: Some(MAINNET_RPC.to_string()),
     };
 
     let address = "0x01729ce1AD61551F08A1A5d4A8a0d3753de028b26b229FF021Ad8a9D3c1c29C9";
