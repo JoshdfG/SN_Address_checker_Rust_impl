@@ -91,7 +91,6 @@ pub async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<boo
         .map(|name| get_selector_from_name(name).unwrap())
         .collect::<Vec<_>>();
 
-    // Check if all required selectors are present
     let has_required_selectors = required_selectors
         .iter()
         .all(|selector| external_selectors.contains(selector));

@@ -5,7 +5,7 @@ const MAINNET_RPC: &str = "https://starknet-mainnet.g.alchemy.com/starknet/versi
 const SEPOLIA_RPC: &str = "https://free-rpc.nethermind.io/sepolia-juno";
 
 #[tokio::test]
-async fn test_is_smart_wallet() {
+async fn test_is_mainet_smart_wallet() {
     let options = CheckRpcUrl {
         node_url: Some(MAINNET_RPC.to_string()),
     };
@@ -18,7 +18,7 @@ async fn test_is_smart_wallet() {
 }
 
 #[tokio::test]
-async fn test_is_smart_contract() {
+async fn test_is_sepolia_smart_contract() {
     let options = CheckRpcUrl {
         node_url: Some(SEPOLIA_RPC.to_string()),
     };
@@ -72,43 +72,20 @@ async fn test_is_valid_starket_address() {
     assert!(result == false, "Expected a valid address");
 }
 
-// #[tokio::test]
-// async fn test_uneployed_address() {
-//     let options = CheckRpcUrl {
-//         node_url: Some(MAINNET_RPC.to_string()),
-//     };
+#[tokio::test]
+async fn test_uneployed_address() {
+    let options = CheckRpcUrl {
+        node_url: Some(MAINNET_RPC.to_string()),
+    };
 
-//     let address = "0x01729ce1AD61551F08A1A5d4A8a0d3753de028b26b229FF021Ad8a9D3c1c29C9";
-//     let result = check_address(address, &options).await;
+    let address = "0x01729ce1AD61551F08A1A5d4A8a0d3753de028b26b229FF021Ad8a9D3c1c29C9";
+    let result = check_address(address, &options).await;
 
-//     assert_eq!(result.unwrap(), false, "Expected an undeployed address");
-// }
-// #[tokio::test]
-// async fn test_rpc_failure_handling() {
-//     let options = CheckRpcUrl {
-//         node_url: Some("https://invalid-rpc.example.com".to_string()),
-//         ..Default::default()
-//     };
-
-//     // Test with an invalid RPC URL
-//     let address = "0x0554b4a27e6ba1e00a01deebdf486c9c0e7bffc5074f67dfbb79bbf011162a62";
-//     let result = is_smart_wallet(address, &options).await;
-
-//     // Assert that the function fails with an error
-//     assert!(result.is_err(), "Expected an error for an invalid RPC URL");
-// }
-
-// #[tokio::test]
-// async fn test_sepolia_network() {
-//     let options = CheckRpcUrl {
-//         node_url: Some(SEPOLIA_RPC.to_string()),
-//         ..Default::default()
-//     };
-
-//     // Test with a Sepolia address
-//     let address = "0x057214e10bbdf9f30dc19e7fe33351ad0f33829647725f5f737aa2ffbeaf5348";
-//     let result = check_address(address, &options).await;
-
-//     // Assert that the function succeeds
-//     assert!(result.is_ok(), "check_address should work on Sepolia");
-// }
+    assert_eq!(
+        result
+            .unwrap_err()
+            .to_string()
+            .contains("Contract not found"),
+        true
+    );
+}
