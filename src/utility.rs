@@ -10,7 +10,7 @@ use url::Url;
 
 #[derive(Debug)]
 pub struct CheckRpcUrl {
-    pub node_url: Option<String>,
+    pub rpc_url: Option<String>,
 }
 
 #[derive(Debug)]
@@ -182,12 +182,12 @@ pub fn is_valid_starknet_address(address: &str) -> bool {
 }
 
 async fn get_provider(options: &CheckRpcUrl) -> Result<Arc<JsonRpcClient<HttpTransport>>> {
-    let node_url = options
-        .node_url
+    let rpc_url = options
+        .rpc_url
         .as_ref()
         .ok_or_else(|| anyhow!("Missing node URL"))?;
 
-    let url = Url::parse(node_url)?;
+    let url = Url::parse(rpc_url)?;
     Ok(Arc::new(JsonRpcClient::new(HttpTransport::new(url))))
 }
 
