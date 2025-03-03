@@ -66,10 +66,27 @@ async fn test_is_smart_wallet_on_testnet() {
 
 #[tokio::test]
 async fn test_is_valid_starket_address() {
-    let address = "0x006a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d88982";
-    let result = is_valid_starknet_address(address);
+    let address = "0x006a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d8892";
+    let (result,_) = is_valid_starknet_address(address);
 
-    assert!(result == false, "Expected a valid address");
+    assert_eq!(result, false, "Expected a valid address");
+}
+
+#[tokio::test]
+async fn test_is_okay(){
+    let address = "0x006a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d88982f";
+    let (result,prefixed) = is_valid_starknet_address(address);
+    assert_eq!(result, true, "Expected a valid address");
+    assert_eq!(prefixed, address, "Expected a valid address");
+}
+
+#[tokio::test]
+async fn test_prefix_to_be_okay(){
+    let address = "0x06a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d88982f";
+    let (result,prefixed) = is_valid_starknet_address(address);
+    assert_eq!(result, true, "Expected a valid address");
+    let adjusted = "0x006a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d88982f";
+    assert_eq!(prefixed, adjusted, "Expected a valid address");
 }
 
 #[tokio::test]

@@ -40,6 +40,9 @@ where
     }
 }
 
+/// This function takes in 2 parameters which are the address you want to
+///check and the struct that contains the field for the rpc_url
+///It checks to know if the address is a smart-wallet.
 pub async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<bool> {
     let provider = get_provider(options).await?;
     let address_fe = parse_address(address)?;
@@ -102,11 +105,19 @@ pub async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<boo
     Ok(has_required_selectors)
 }
 
+/// This function takes in 2 parameters which are the address you want to
+/// check and the struct that contains the field for the rpc_url
+/// It checks to know if the address is a smart-contract.
 pub async fn is_smart_contract(address: &str, options: &CheckRpcUrl) -> Result<bool> {
     let is_wallet = is_smart_wallet(address, options).await?;
     Ok(!is_wallet)
 }
 
+
+/// This function takes in 2 parameters which are the address you want to
+/// check and the struct that contains the field for the rpc_url
+/// It checks to know if the address is a smart-wallet or a smart-contract.
+/// It returns a message from the CheckAddressResponse struct to confirm the type of address you are interacting with.
 pub async fn check_address(address: &str, options: &CheckRpcUrl) -> Result<CheckAddressResponse> {
     let mut response = CheckAddressResponse {
         is_valid: false,
@@ -115,7 +126,7 @@ pub async fn check_address(address: &str, options: &CheckRpcUrl) -> Result<Check
         message: String::new(),
     };
 
-    if !is_valid_starknet_address(address) {
+    if !is_valid_starknet_address(address).0 {
         response.message = "❌ Invalid address format".to_string();
         return Ok(response);
     }
@@ -158,27 +169,25 @@ pub async fn check_address(address: &str, options: &CheckRpcUrl) -> Result<Check
 
     Ok(response)
 }
-pub fn is_valid_starknet_address(address: &str) -> bool {
-    let re = Regex::new(r"^0x0[0-9a-fA-F]{63}$").unwrap();
-    if !re.is_match(address) {
-        println!("❌ Invalid format - Must be 66 characters starting with 0x0");
-        return false;
+
+pub fn is_valid_starknet_address(address: &str) -> (bool, String) {
+    let re = Regex::new(r"^0x[0-9a-fA-F]{64}$").unwrap();
+
+    if re.is_match(address) {
+        return (true, address.to_string());
     }
 
-    match FieldElement::from_hex_be(address) {
-        Ok(fe) if fe == FieldElement::ZERO => {
-            println!("❌ Invalid - Zero address (0x000...000)");
-            false
-        }
-        Ok(_) => {
-            println!("✅ Valid Starknet address");
-            true
-        }
-        Err(_) => {
-            println!("❌ Invalid hex value - Contains non-hex characters");
-            false
+    if address.len() == 65 && address.starts_with("0x") {
+        let without_prefix = &address[2..];
+        if without_prefix.chars().all(|c| c.is_ascii_hexdigit()) {
+            let fixed_address = format!("0x0{}", without_prefix);
+            if re.is_match(&fixed_address) {
+                return (true, fixed_address);
+            }
         }
     }
+
+    (false, address.to_string())
 }
 
 async fn get_provider(options: &CheckRpcUrl) -> Result<Arc<JsonRpcClient<HttpTransport>>> {
