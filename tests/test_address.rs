@@ -1,4 +1,4 @@
-use starknet_address_checker::utility::{check_address, is_valid_starknet_address, CheckRpcUrl};
+use starknet_address_checker::{check_address, is_valid_starknet_address, CheckRpcUrl};
 
 use tokio;
 const MAINNET_RPC: &str = "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/OEXJ9TcADB3MesS1_JuEc-UXQ_rBMsPR";
