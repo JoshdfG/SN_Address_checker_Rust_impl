@@ -39,10 +39,10 @@ where
     }
 }
 
-/// This function takes in 2 parameters which are the address you want to
+/// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
 /// It checks to know if the address is a smart-wallet.
-pub async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<bool> {
+ async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<bool> {
     let provider = get_provider(options).await?;
     let address_fe = parse_address(address)?;
 
@@ -104,20 +104,31 @@ pub async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<boo
     Ok(has_required_selectors)
 }
 
-/// This function takes in 2 parameters which are the address you want to
+/// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
 /// It checks to know if the address is a smart-contract.
-pub async fn is_smart_contract(address: &str, options: &CheckRpcUrl) -> Result<bool> {
+ async fn is_smart_contract(address: &str, options: &CheckRpcUrl) -> Result<bool> {
     let is_smart_wallet = is_smart_wallet(address, options).await?;
     Ok(!is_smart_wallet)
 }
 
 
-/// This function takes in 2 parameters which are the address you want to
+/// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
 /// It checks to know if the address is a smart-wallet or a smart-contract.
 /// It returns a message from the CheckAddressResponse struct to confirm the
 /// type of address you are interacting with.
+///
+/// There is an address response struct where you can select the variant for the
+/// response you are expecting. I'd do a demo below.
+/// ```
+/// pub struct CheckAddressResponse {
+///    pub is_valid_address: bool,
+///    pub is_smart_wallet: bool,
+///    pub is_smart_contract: bool,
+///    pub message: String,
+/// }
+///```
 /// # Example: Checking if an Address is a Smart Contract
 ///
 /// This example demonstrates how to use the `check_address` function to verify if a given address
@@ -215,7 +226,10 @@ pub async fn check_address(address: &str, options: &CheckRpcUrl) -> Result<Check
 
 /// This function takes in an address and if the address is a valid starknet
 /// address it returns it as it is else it pads it with the required zero to
-///make it a complete address length, However if the address is not a valid
+/// make it a complete address length,This works with starknet addresses that
+/// are one bit shorter than the required length, if it's a valid address it returns
+/// it as it is, else it modifies it and returns the modified address,
+/// However if the address is not a valid
 /// starknet address you get false as your response.
 /// # Examples
 ///```
