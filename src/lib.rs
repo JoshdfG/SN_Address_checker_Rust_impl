@@ -39,7 +39,7 @@ where
     }
 }
 
-/// This function takes in 2 parameters which are the address you want to
+/// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
 /// It checks to know if the address is a smart-wallet.
 pub async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<bool> {
@@ -104,7 +104,7 @@ pub async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<boo
     Ok(has_required_selectors)
 }
 
-/// This function takes in 2 parameters which are the address you want to
+/// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
 /// It checks to know if the address is a smart-contract.
 pub async fn is_smart_contract(address: &str, options: &CheckRpcUrl) -> Result<bool> {
@@ -113,7 +113,7 @@ pub async fn is_smart_contract(address: &str, options: &CheckRpcUrl) -> Result<b
 }
 
 
-/// This function takes in 2 parameters which are the address you want to
+/// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
 /// It checks to know if the address is a smart-wallet or a smart-contract.
 /// It returns a message from the CheckAddressResponse struct to confirm the
