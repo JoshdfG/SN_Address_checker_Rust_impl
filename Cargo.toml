@@ -1,7 +1,10 @@
 [package]
-name = "sn_address_checker"
+name = "starknet_address_checker"
 version = "0.1.0"
 edition = "2021"
+authors = ["Josh_dfG"]
+description = "A library that can be used to distinguish between starknet smart wallets and deployed smart contracts and also validate Starknet addresses if they are valid or not and also."
+license = "MIT"
 
 [dependencies]
 starknet = "0.7.0"

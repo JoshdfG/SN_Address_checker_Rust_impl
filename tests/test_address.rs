@@ -1,4 +1,4 @@
-use sn_address_checker::utility::{check_address, is_valid_starknet_address, CheckRpcUrl};
+use starknet_address_checker::utility::{check_address, is_valid_starknet_address, CheckRpcUrl};
 
 use tokio;
 const MAINNET_RPC: &str = "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/OEXJ9TcADB3MesS1_JuEc-UXQ_rBMsPR";
@@ -14,7 +14,7 @@ async fn test_is_mainet_smart_wallet() {
     let result = check_address(address, &options).await;
 
     assert!(result.is_ok(), "API request failed");
-    assert_eq!(result.unwrap().is_wallet, true, "Expected a smart wallet");
+    assert_eq!(result.unwrap().is_smart_wallet, true, "Expected a smart wallet");
 }
 
 #[tokio::test]
@@ -28,7 +28,7 @@ async fn test_is_sepolia_smart_contract() {
 
     assert!(result.is_ok(), "API request failed");
     assert_eq!(
-        result.unwrap().is_contract,
+        result.unwrap().is_smart_contract,
         true,
         "Expected a smart contract"
     );
@@ -45,7 +45,7 @@ async fn test_is_smart_contract_on_mainnet() {
 
     assert!(result.is_ok(), "API request failed");
     assert_eq!(
-        result.unwrap().is_contract,
+        result.unwrap().is_smart_contract,
         true,
         "Expected a smart contract"
     );
@@ -61,7 +61,7 @@ async fn test_is_smart_wallet_on_testnet() {
     let result = check_address(address, &options).await;
 
     assert!(result.is_ok());
-    assert_eq!(result.unwrap().is_wallet, true, "Expected a smart wallet");
+    assert_eq!(result.unwrap().is_smart_wallet, true, "Expected a smart wallet");
 }
 
 #[tokio::test]
