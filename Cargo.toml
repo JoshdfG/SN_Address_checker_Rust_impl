@@ -2,10 +2,10 @@
 name = "starknet_address_checker"
 version = "0.1.0"
 edition = "2021"
-authors = ["Josh_dfG agboolajosha161@gmail.com"]
+authors = ["Josh_dfG agboolajoshua161@gmail.com"]
 description = "A library that can be used to distinguish between starknet smart wallets and deployed smart contracts and also validate Starknet addresses if they are valid or not and also."
 license = "MIT"
-repository =" https://github.com/JoshdfG/SN_Address_checker_Rust_impl"
+repository ="https://github.com/JoshdfG/SN_Address_checker_Rust_impl"
 
 [profile.release]
 opt-level = 3  # Aggressive optimizations
