@@ -1,6 +1,6 @@
 # StarkNet Address Checker
 
-A Rust library for validating and checking StarkNet addresses. This crate provides utilities to verify if and address is a Smart Wallet or a user deployed Smart Contract, it can also check if an address is a valid StarkNet address, pad incomplete addresses.
+A Rust library for validating and checking StarkNet addresses. This crate provides utilities to verify if and address is a Smart Wallet or a user deployed Smart Contract, it can also check if an address is a valid StarkNet address and pad incomplete starknet addresses that are one bit shorter.
 
 # Features
 - **Validate StarkNet Addresses**: Check if an address is a valid StarkNet address.
