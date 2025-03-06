@@ -7,6 +7,11 @@ description = "A library that can be used to distinguish between starknet smart 
 license = "MIT"
 repository =" https://github.com/JoshdfG/SN_Address_checker_Rust_impl"
 
+[profile.release]
+opt-level = 3  # Aggressive optimizations
+lto = true     # Link-Time Optimization
+codegen-units = 1 # Fewer codegen units for better optimization
+
 [dependencies]
 starknet = "0.7.0"
 tokio = { version = "1.0", features = ["full"] }
