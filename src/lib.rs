@@ -29,7 +29,7 @@ where
     loop {
         match operation().await {
             Ok(result) => return Ok(result),
-            Err(e) if attempt < retries => {
+            Err(_) if attempt < retries => {
                 let delay = Duration::from_secs((attempt + 1) as u64);
                 tokio::time::sleep(delay).await;
                 attempt += 1;
@@ -42,7 +42,7 @@ where
 /// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
 /// It checks to know if the address is a smart-wallet.
- async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<bool> {
+async fn is_smart_wallet(address: &str, options: &CheckRpcUrl) -> Result<bool> {
     let provider = get_provider(options).await?;
     let address_fe = parse_address(address)?;
 
@@ -55,7 +55,7 @@ where
         },
         3,
     )
-        .await?;
+    .await?;
 
     if class_hash == FieldElement::ZERO {
         println!("Invalid or missing class hash");
@@ -71,7 +71,7 @@ where
         },
         3,
     )
-        .await?;
+    .await?;
 
     let external_selectors = match contract_class {
         ContractClass::Legacy(class) => class
@@ -88,7 +88,7 @@ where
             .collect::<Vec<_>>(),
     };
 
-    let required_selectors = vec!["__execute__", "__validate__"]
+    let required_selectors = ["__execute__", "__validate__"]
         .iter()
         .map(|name| get_selector_from_name(name).unwrap())
         .collect::<Vec<_>>();
@@ -107,11 +107,10 @@ where
 /// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
 /// It checks to know if the address is a smart-contract.
- async fn is_smart_contract(address: &str, options: &CheckRpcUrl) -> Result<bool> {
+async fn is_smart_contract(address: &str, options: &CheckRpcUrl) -> Result<bool> {
     let is_smart_wallet = is_smart_wallet(address, options).await?;
     Ok(!is_smart_wallet)
 }
-
 
 /// This function takes in two parameters which are the address you want to
 /// check and the struct that contains the field for the rpc_url
@@ -140,7 +139,7 @@ where
 /// #[tokio::main]
 /// async fn main() {
 ///     // Define the RPC URL for the Sepolia testnet / mainnet
-///     const SEPOLIA_RPC: &str = "https://free-rpc.nethermind.io/sepolia-juno";
+///     const SEPOLIA_RPC: &str = "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_8/OEXJ9TcADB3MesS1_JuEc-UXQ_rBMsPR";
 ///
 ///     // Configure the options for the address check
 ///     let options = CheckRpcUrl {
@@ -196,7 +195,7 @@ pub async fn check_address(address: &str, options: &CheckRpcUrl) -> Result<Check
         },
         3,
     )
-        .await?;
+    .await?;
 
     if class_hash == FieldElement::ZERO {
         response.message = "❌ No contract at this address".to_string();
@@ -207,22 +206,20 @@ pub async fn check_address(address: &str, options: &CheckRpcUrl) -> Result<Check
     if is_smart_wallet {
         response.is_valid_address = true;
         response.is_smart_wallet = true;
-        response.message =
-            "🛡️ Is Smart Wallet: ✅ Yes\nYou are interacting with a smart-wallet".to_string();
+        response.message = "You are interacting with a smart-wallet".to_string();
     } else {
         let is_smart_contract = is_smart_contract(address, options).await?;
         if is_smart_contract {
             response.is_valid_address = true;
             response.is_smart_contract = true;
-            response.message = "🛡️ Is Smart Wallet: ❌ No\n🛡️ Is Smart Contract: ✅ Yes\nYou are interacting with a smart-contract".to_string();
+            response.message = "You are interacting with a smart-contract".to_string();
         } else {
-            response.message = "🛡️ Is Smart Wallet: ❌ No\n🛡️ Is Smart Contract: ❌ No\nThis address is not a smart wallet or smart contract".to_string();
+            response.message = "This address is not a smart wallet or smart contract".to_string();
         }
     }
 
     Ok(response)
 }
-
 
 /// This function takes in an address and if the address is a valid starknet
 /// address it returns it as it is else it pads it with the required zero to

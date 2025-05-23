@@ -1,8 +1,7 @@
 use starknet_address_checker::{check_address, is_valid_starknet_address, CheckRpcUrl};
 
-use tokio;
 const MAINNET_RPC: &str = "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/OEXJ9TcADB3MesS1_JuEc-UXQ_rBMsPR";
-const SEPOLIA_RPC: &str = "https://free-rpc.nethermind.io/sepolia-juno";
+const SEPOLIA_RPC: &str = "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_8/OEXJ9TcADB3MesS1_JuEc-UXQ_rBMsPR";
 
 #[tokio::test]
 async fn test_is_mainet_smart_wallet() {
@@ -14,7 +13,7 @@ async fn test_is_mainet_smart_wallet() {
     let result = check_address(address, &options).await;
 
     assert!(result.is_ok(), "API request failed");
-    assert_eq!(result.unwrap().is_smart_wallet, true, "Expected a smart wallet");
+    assert!(result.unwrap().is_smart_wallet, "Expected a smart wallet");
 }
 
 #[tokio::test]
@@ -27,10 +26,9 @@ async fn test_is_sepolia_smart_contract() {
     let result = check_address(address, &options).await;
 
     assert!(result.is_ok(), "API request failed");
-    assert_eq!(
+    assert!(
         result.unwrap().is_smart_contract,
-        true,
-        "Expected a smart contract"
+        "Expected a smart contract",
     );
 }
 
@@ -44,10 +42,9 @@ async fn test_is_smart_contract_on_mainnet() {
     let result = check_address(address, &options).await;
 
     assert!(result.is_ok(), "API request failed");
-    assert_eq!(
+    assert!(
         result.unwrap().is_smart_contract,
-        true,
-        "Expected a smart contract"
+        "Expected a smart contract",
     );
 }
 
@@ -61,34 +58,37 @@ async fn test_is_smart_wallet_on_testnet() {
     let result = check_address(address, &options).await;
 
     assert!(result.is_ok());
-    assert_eq!(result.unwrap().is_smart_wallet, true, "Expected a smart wallet");
+    assert!(result.unwrap().is_smart_wallet, "Expected a smart wallet");
 }
 
 #[tokio::test]
 async fn test_is_valid_starket_address() {
     let address = "0x006a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d8892";
-    let (result,_) = is_valid_starknet_address(address);
+    let (result, _) = is_valid_starknet_address(address);
 
-    assert_eq!(result, false, "Expected a valid address");
+    assert!(
+        !result,
+        "Expected address '{}' to be invalid due to incorrect length or format",
+        result
+    );
 }
 
 #[tokio::test]
-async fn test_is_okay(){
+async fn test_is_okay() {
     let address = "0x006a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d88982f";
-    let (result,prefixed) = is_valid_starknet_address(address);
-    assert_eq!(result, true, "Expected a valid address");
+    let (result, prefixed) = is_valid_starknet_address(address);
+    assert!(result, "Expected a valid address");
     assert_eq!(prefixed, address, "Expected a valid address");
 }
 
 #[tokio::test]
-async fn test_prefix_to_be_okay(){
+async fn test_prefix_to_be_okay() {
     let address = "0x06a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d88982f";
-    let (result,prefixed) = is_valid_starknet_address(address);
-    assert_eq!(result, true, "Expected a valid address");
+    let (result, prefixed) = is_valid_starknet_address(address);
+    assert!(result, "Expected a valid address");
     let adjusted = "0x006a06ca686c6193a3420333405fe6bfb065197d670c645bdc0722a36d88982f";
     assert_eq!(prefixed, adjusted, "Expected a valid address");
 }
-
 #[tokio::test]
 async fn test_uneployed_address() {
     let options = CheckRpcUrl {
@@ -98,11 +98,8 @@ async fn test_uneployed_address() {
     let address = "0x01729ce1AD61551F08A1A5d4A8a0d3753de028b26b229FF021Ad8a9D3c1c29C9";
     let result = check_address(address, &options).await;
 
-    assert_eq!(
-        result
-            .unwrap_err()
-            .to_string()
-            .contains("Contract not found"),
-        true
-    );
+    assert!(result
+        .unwrap_err()
+        .to_string()
+        .contains("Contract not found"));
 }
